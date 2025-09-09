@@ -1,0 +1,13 @@
+<configure>
+  <interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces">
+    <interface>
+      <name>GigabitEthernet0/1</name>
+      <description>Management interface</description>
+      <type>iana-if-type:ethernetCsmacd</type>
+      <enabled>true</enabled>
+    </interface>
+  </interfaces>
+  <system xmlns="urn:ietf:params:xml:ns:yang:ietf-system">
+    <hostname>router1</hostname>
+  </system>
+</configure>

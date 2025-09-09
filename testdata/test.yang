@@ -1,0 +1,41 @@
+module test-interfaces {
+  namespace "urn:ietf:params:xml:ns:yang:test-interfaces";
+  prefix test-if;
+
+  import ietf-interfaces {
+    prefix if;
+  }
+
+  organization "Test Organization";
+  contact "admin@test.com";
+  description "Test YANG module for interfaces";
+
+  revision 2024-09-09 {
+    description "Initial revision";
+  }
+
+  container interfaces {
+    description "Interface configuration";
+    
+    list interface {
+      key "name";
+      description "Interface entry";
+      
+      leaf name {
+        type string;
+        description "Interface name";
+      }
+      
+      leaf description {
+        type string;
+        description "Interface description";
+      }
+      
+      leaf enabled {
+        type boolean;
+        default true;
+        description "Interface admin status";
+      }
+    }
+  }
+}
