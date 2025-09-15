@@ -10,8 +10,12 @@ type SearchResult struct {
 	MatchType   string
 }
 
-// NETCONFConfig 表示NETCONF配置结构
-type NETCONFConfig struct {
-	XMLName xml.Name `xml:"config"`
-	Content string   `xml:",innerxml"`
+// GenericXMLContent 表示通用XML内容结构
+type GenericXMLContent struct {
+	XMLName xml.Name `xml:""`          // 匹配任何根元素
+	Content string   `xml:",innerxml"` // 获取所有内部XML内容
 }
+
+// NETCONFConfig 保持向后兼容性（已废弃，请使用 GenericXMLContent）
+// Deprecated: Use GenericXMLContent instead
+type NETCONFConfig = GenericXMLContent

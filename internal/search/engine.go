@@ -83,7 +83,7 @@ func (e *Engine) SearchFilesParallel(directory, searchTerm string, numWorkers in
 // findNETCONFFiles 查找所有NETCONF相关文件
 func (e *Engine) findNETCONFFiles(directory string) ([]string, error) {
 	var files []string
-	
+
 	err := filepath.WalkDir(directory, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			return err
@@ -165,18 +165,18 @@ func (e *Engine) boyerMooreSearch(text, pattern string) bool {
 	i := len(pattern) - 1
 	for i < len(text) {
 		j := len(pattern) - 1
-		
+
 		// 从右向左匹配
 		for j >= 0 && text[i] == pattern[j] {
 			i--
 			j--
 		}
-		
+
 		// 完全匹配
 		if j < 0 {
 			return true
 		}
-		
+
 		// 根据坏字符规则移动
 		if shift, exists := badCharTable[text[i]]; exists {
 			i += max(shift, len(pattern)-j)
@@ -184,7 +184,7 @@ func (e *Engine) boyerMooreSearch(text, pattern string) bool {
 			i += len(pattern)
 		}
 	}
-	
+
 	return false
 }
 
@@ -199,17 +199,19 @@ func max(a, b int) int {
 // searchXMLFile 在XML文件中搜索
 func (e *Engine) searchXMLFile(content []byte, filePath, searchTerm string) ([]models.SearchResult, error) {
 	var results []models.SearchResult
-	var config models.NETCONFConfig
 
-	err := xml.Unmarshal(content, &config)
+	// 尝试解析XML以验证格式，但不依赖特定的根元素
+	var genericXML models.GenericXMLContent
+	err := xml.Unmarshal(content, &genericXML)
 	if err != nil {
+		// 如果XML格式无效，直接返回错误，让调用者使用普通文本搜索
 		return nil, err
 	}
 
-	// Search in XML content with better context
-	if strings.Contains(strings.ToLower(config.Content), strings.ToLower(searchTerm)) {
-		// For simplicity, we'll use line-based search within XML content
-		lines := strings.Split(string(content), "\n")
+	// 在XML内容中搜索（包括根元素名称和内部内容）
+	xmlString := string(content)
+	if strings.Contains(strings.ToLower(xmlString), strings.ToLower(searchTerm)) {
+		lines := strings.Split(xmlString, "\n")
 		for i, line := range lines {
 			if strings.Contains(strings.ToLower(line), strings.ToLower(searchTerm)) {
 				results = append(results, models.SearchResult{
